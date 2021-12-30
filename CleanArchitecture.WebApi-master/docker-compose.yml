@@ -1,0 +1,27 @@
+version: '3'
+services:
+  backend:
+    container_name: clean-architecture-web-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+  db:
+    container_name: sql-server-2017
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+            SA_PASSWORD: "Password789"
+            ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - type: volume
+        source: vmssql
+        target: /var/opt/mssql
+   
+volumes:
+  vmssql:
+      
