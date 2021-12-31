@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -15,16 +15,23 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import { useForm } from "react-hook-form";
-import axios from 'axios';
+import { useForm } from 'react-hook-form'
+import axios from 'axios'
 
 const Login = () => {
-  const [user,setUser]=useState([{
-    username: '',
-    password: ''
-  }]);
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const onSubmit = data => console.log(data);
+  const [user, setUser] = useState([
+    {
+      username: '',
+      password: '',
+    },
+  ])
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm()
+  const onSubmit = (data) => console.log(data)
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -40,13 +47,18 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        {...register('username')}
+                        placeholder="Username"
+                        autoComplete="username"
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
+                        {...register('password')}
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
@@ -54,11 +66,9 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <Link to="/home">
-                          <CButton color="primary" className="px-4">
-                            Login
-                          </CButton>
-                        </Link>
+                        <CButton type="submit" color="primary" className="px-4">
+                          Login
+                        </CButton>
                       </CCol>
                       <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
