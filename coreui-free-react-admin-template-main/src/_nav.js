@@ -13,6 +13,7 @@ import {
   cilStar,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import CallAPI from "./utils/Callapi";
 
 const _nav = [
   {

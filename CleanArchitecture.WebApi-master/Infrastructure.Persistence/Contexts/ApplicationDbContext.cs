@@ -39,12 +39,16 @@ namespace Infrastructure.Persistence.Contexts
 
             modelBuilder.Entity<Menu>(entity =>
             {
-                entity.HasKey(e => e.nameCode)
+                entity.HasKey(e => e.id)
                     .HasName("PK__Menu__4BB86E8D74B52EE3");
 
-                entity.Property(e => e.nameCode).IsUnicode(false);
+                entity.Property(e => e.id).IsUnicode(false);
 
                 entity.Property(e => e.nameMenu).IsUnicode(false);
+                entity.Property(e => e.parentID).IsUnicode(false);
+                entity.Property(e => e.active).HasDefaultValueSql("((0))");
+
+
             });
 
             OnModelCreatingPartial(modelBuilder);
