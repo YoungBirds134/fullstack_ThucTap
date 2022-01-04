@@ -70,13 +70,12 @@ namespace Infrastructure.Identity.Services
                 }
                 JwtSecurityToken jwtSecurityToken = await GenerateJWToken(user);
                 AuthenticationResponse response = new AuthenticationResponse();
-                response.Id = user.Id;
+                // response.Id = user.Id;
                 response.JWToken = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-                response.Email = user.Email;
-                response.UserName = user.UserName;
-                response.Roles = await _accountStore.GetRoles(user.Id);
-                response.roleClaim = await _accountStore.GetClaims(user.Id);
-                response.userClaim = await _accountStore.GetUserClaims(user.Id);
+                
+                // response.Roles = await _accountStore.GetRoles(user.Id);
+                // response.roleClaim = await _accountStore.GetClaims(user.Id);
+                // response.userClaim = await _accountStore.GetUserClaims(user.Id);
                 response.IsVerified = user.EmailConfirmed;
                 var refreshToken = GenerateRefreshToken(ipAddress);
                 response.RefreshToken = refreshToken.Token;

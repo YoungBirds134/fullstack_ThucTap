@@ -6,6 +6,7 @@ using Infrastructure.Persistence;
 using Infrastructure.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
@@ -21,6 +22,15 @@ namespace WebApi
     public class Startup
     {
         public IConfiguration _config { get; }
+        public CorsPolicy GenerateCorsPolicy(){
+                var corsBuilder = new CorsPolicyBuilder();
+                corsBuilder.AllowAnyHeader();
+                corsBuilder.AllowAnyMethod();
+                corsBuilder.AllowAnyOrigin(); // For anyone access.
+                //corsBuilder.WithOrigins("http://localhost:56573"); // for a specific url. Don't add a forward slash on the end!
+                corsBuilder.AllowCredentials();
+                return corsBuilder.Build();
+    }
         public Startup(IConfiguration configuration)
         {
             _config = configuration;
@@ -29,6 +39,7 @@ namespace WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddApplicationLayer();
             services.AddIdentityInfrastructure(_config);
             services.AddPersistenceInfrastructure(_config);
@@ -116,7 +127,9 @@ namespace WebApi
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            // Make sure you call this before calling app.UseMvc()
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("*"));
+      
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
