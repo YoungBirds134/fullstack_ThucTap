@@ -13,6 +13,8 @@ namespace Application.Mappings
         public GeneralProfile()
         {
             CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<Menu, MenuDTO>().ReverseMap();
+
             CreateMap<UserDTO, User>().ReverseMap();
             CreateMap<MenuDTO,Menu>().ReverseMap();
             CreateMap<LanguagesDTO,Language>().ReverseMap();

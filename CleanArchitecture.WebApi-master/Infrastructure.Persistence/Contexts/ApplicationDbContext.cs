@@ -46,6 +46,10 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.nameMenu).IsUnicode(false);
                 entity.Property(e => e.parentID).IsUnicode(false);
+                entity.Property(e => e.route).IsUnicode(false);
+                entity.Property(e => e.nameComponent).IsUnicode(false);
+
+
                 entity.Property(e => e.active).HasDefaultValueSql("((0))");
 
 

@@ -11,10 +11,14 @@ namespace Infrastructure.Persistence.Contexts
         public string id { get; set; }
       
         public string nameMenu { get; set; }
+        public string nameComponent { get; set; }
+
 
         public string parentID { get; set; }
 
         public bool? active { get; set; }
+        public string route { get; set; }
+
 
     }
 }

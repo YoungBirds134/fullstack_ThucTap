@@ -31,5 +31,9 @@ namespace Application.Interfaces.Repositories
         Task<PagedResponse<IEnumerable<ProductPagingDTO>>> GetProductPaging_Filter_Multi_Param(ProductViewModel_Filter_Multi productViewModel_Filter_Multi);
 
 
+        Task<PagedResponse<IEnumerable<MenuDTO>>> GetMenu();
+
+
+
     }
 }

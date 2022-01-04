@@ -351,5 +351,48 @@ namespace Infrastructure.Persistence.StoreProceduce
                 throw ex;
             }
         }
+
+        public async Task<PagedResponse<IEnumerable<MenuDTO>>> GetMenu()
+        {
+            try
+            {
+                var menu = _applicationDbContext.Menu.ToList();
+               
+                using (var con = new SqlConnection(connection))
+                {
+                    con.Open();
+                    var sql = con.Query<Menu>("Select * From Menu").ToList();
+                    var map = _iMapper.Map<IEnumerable<Menu>, IEnumerable<MenuDTO>>(sql);
+
+
+                    return new PagedResponse<IEnumerable<MenuDTO>>(getMenuTree(map,null),0,0,0,0);
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IEnumerable<MenuDTO> getMenuTree(IEnumerable<MenuDTO> list,string? parentID) {
+            try
+            {
+                return list.Where(x => x.parentID == parentID).Select(k => new MenuDTO() {
+                    id = k.id,
+                    nameMenu=k.nameMenu,
+                    nameComponent=k.nameComponent,
+                    route=k.route,
+                    parentID=k.parentID,
+                    active=k.active,
+                    listMenu = getMenuTree(list, k.id),
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

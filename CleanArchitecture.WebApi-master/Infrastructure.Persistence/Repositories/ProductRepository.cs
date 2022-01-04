@@ -200,5 +200,17 @@ try
                 throw ex;
             }
         }
+
+        public async Task<PagedResponse<IEnumerable<MenuDTO>>> GetMenu()
+        {
+            try
+            {
+                return await _productStore.GetMenu();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

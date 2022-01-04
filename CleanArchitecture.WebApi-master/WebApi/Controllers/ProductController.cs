@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Application.DTOs;
 using Application.Filters;
 using Application.Interfaces.Repositories;
+using Application.Wrappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace WebApi.Controllers.v1
+namespace WebApi.Controllers
 {
     //[MiddlewareFilter(typeof(LocalizationPipeline))]
     public class ProductController : BaseApiController
@@ -91,10 +92,10 @@ namespace WebApi.Controllers.v1
 
         [HttpGet("GetAllMenus")]
         [AllowAnonymous]
-        public async Task<IEnumerable<MenuDTO>> GetAllMenus()
+        public async Task<PagedResponse<IEnumerable<MenuDTO>>> GetAllMenus()
         {
 
-            return await _productService.GetAllMenus();
+            return await _productService.GetMenu();
 
         }
 
