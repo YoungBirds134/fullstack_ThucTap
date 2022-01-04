@@ -18,20 +18,20 @@ import { cilLockLocked, cilUser } from "@coreui/icons";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-const Login = () => {
-  const [user, setUser] = useState([
-    {
-      username: "",
-      password: "",
-    },
-  ]);
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data) => console.log(data);
+const Login = (...props) => {
+  // const [user, setUser] = useState([
+  //   {
+  //     username: "",
+  //     password: "",
+  //   },
+  // ]);
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   watch,
+  //   formState: { errors },
+  // } = useForm();
+  // const onSubmit = (data) => console.log(data);
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
