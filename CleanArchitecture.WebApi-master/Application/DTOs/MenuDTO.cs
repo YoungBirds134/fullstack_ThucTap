@@ -6,7 +6,5 @@ namespace Application.DTOs
         public MenuDTO()
         {
         }
-
-       public string nameMenu { get; set; }
     }
 }

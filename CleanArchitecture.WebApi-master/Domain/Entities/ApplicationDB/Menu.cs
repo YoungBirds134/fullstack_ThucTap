@@ -7,12 +7,14 @@ namespace Infrastructure.Persistence.Contexts
 {
     public partial class Menu
     {
-        [Key]
-        [Column("nameCode")]
-        [StringLength(255)]
-        public string nameCode { get; set; }
-        [Column("nameMenu")]
-        [StringLength(255)]
+        
+        public string id { get; set; }
+      
         public string nameMenu { get; set; }
+
+        public string parentID { get; set; }
+
+        public bool? active { get; set; }
+
     }
 }
