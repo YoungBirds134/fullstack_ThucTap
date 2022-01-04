@@ -1,6 +1,7 @@
-import React from 'react'
+import React,{useState} from "react";
 import { useForm } from "react-hook-form";
-import { Link } from 'react-router-dom'
+import { Link,Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import {
   CButton,
   CCard,
@@ -13,19 +14,58 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
-} from '@coreui/react'
-import CallAPI from './../../../utils/Callapi'
-import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+} from "@coreui/react";
+import CallAPI from "./../../../utils/Callapi";
+import CIcon from "@coreui/icons-react";
+import { cilLockLocked, cilUser } from "@coreui/icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const onSubmit = data => {console.log(data)
-    CallAPI('authenticate',"POST",data).then((response) => {
-    console.log("API CALL: " +JSON.stringify(response.data) );
-  });
+  const history = useHistory();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+
+  } = useForm();
+  const {isLogin,setIsLogin} = useState(false);
+  const onSubmit = (data) => {
+    console.log(data);
+    CallAPI("authenticate", "POST", data)
+      .then((response) => {
+        var data = response.data.data;
+        console.log("API CALL: " + JSON.stringify(data.jwToken));
+        toast("🦄 Login Success", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        // userHasAuthenticated(true);
+        history.push("/dashboard");
+        // setIsLogin(true);
+      })
+      .catch((error) => {
+        console.log("Email And Password Error" + error);
+        toast.error("🦄 Email And Password Error", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
   };
+
   return (
+
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
@@ -35,19 +75,25 @@ const Login = () => {
                 <CCardBody>
                   <CForm onSubmit={handleSubmit(onSubmit)}>
                     <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <p className="text-medium-emphasis">
+                      Sign In to your account
+                    </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput {...register("Email")} placeholder="Email" autoComplete="email" />
+                      <CFormInput
+                        {...register("Email")}
+                        placeholder="Email"
+                        autoComplete="email"
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                      {...register("Password")}
+                        {...register("Password")}
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
@@ -68,16 +114,25 @@ const Login = () => {
                   </CForm>
                 </CCardBody>
               </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+              <CCard
+                className="text-white bg-primary py-5"
+                style={{ width: "44%" }}
+              >
                 <CCardBody className="text-center">
                   <div>
                     <h2>Sign up</h2>
                     <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                      aliqua.
                     </p>
                     <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
+                      <CButton
+                        color="primary"
+                        className="mt-3"
+                        active
+                        tabIndex={-1}
+                      >
                         Register Now!
                       </CButton>
                     </Link>
@@ -89,7 +144,7 @@ const Login = () => {
         </CRow>
       </CContainer>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
