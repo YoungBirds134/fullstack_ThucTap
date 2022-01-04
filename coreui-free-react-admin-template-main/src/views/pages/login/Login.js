@@ -14,12 +14,17 @@ import {
   CInputGroupText,
   CRow,
 } from '@coreui/react'
+import CallAPI from './../../../utils/Callapi'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
 const Login = () => {
   const { register, handleSubmit, watch, formState: { errors } } = useForm();
-  const onSubmit = data => console.log(data);
+  const onSubmit = data => {console.log(data)
+    CallAPI('authenticate',"POST",data).then((response) => {
+    console.log("API CALL: " +JSON.stringify(response.data) );
+  });
+  };
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -35,14 +40,14 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput {...register("username")} placeholder="Username" autoComplete="username" />
+                      <CFormInput {...register("Email")} placeholder="Email" autoComplete="email" />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
-                      {...register("password")}
+                      {...register("Password")}
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
@@ -50,7 +55,7 @@ const Login = () => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton type="submit" color="primary" className="px-4">
                           Login
                         </CButton>
                       </CCol>
