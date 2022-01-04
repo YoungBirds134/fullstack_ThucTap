@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using Application.DTOs.Account;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    // [Route("api/[controller]")]
     [ApiController]
+  
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -21,6 +23,7 @@ namespace WebApi.Controllers
         }
         [HttpPost("authenticate")]
         [AllowAnonymous]
+        
         public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
         {
            
