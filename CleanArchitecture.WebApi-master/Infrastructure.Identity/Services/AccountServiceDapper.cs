@@ -19,6 +19,7 @@ using Infrastructure.Identity.Store;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Infrastructure.Identity.ultils;
+using Application.Enums;
 
 namespace Infrastructure.Identity.Services
 {
@@ -105,48 +106,36 @@ namespace Infrastructure.Identity.Services
 
         public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
         {
-            try
+            var userWithSameUserName = await _accountStore.FindByNameAsync(request.UserName);
+            if (userWithSameUserName == false)
             {
-                var userCheck = await _accountStore.FindByEmail(request.Email);
-                if (userCheck == null)
-                {
                 throw new ApiException($"Username '{request.UserName}' is already taken.");
-                }
-                var user = new UserDTO
+            }
+            var user = new Models.ApplicationUser
             {
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserName = request.UserName
             };
-            var passwordUser = _encryptionHash.Encrypt(request.Password);
-            if (userCheck  == null)
+            var userWithSameEmail = await _accountStore.FindByEmail(request.Email);
+            if (userWithSameEmail == null)
             {
-                var result = await _accountStore.CreateAccount(user, passwordUser);
-              
-                if (result)
+                var result = await _accountStore.CreateUser(user, request.Password);
+                if (result == "Succeeded")
                 {
-                    // await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
-                    // var verificationUri = await SendVerificationEmail(user, origin);
-                    // //TODO: Attach Email Service here and configure it via appsettings
-                    // await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" });
-                    // return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by visiting this URL {verificationUri}");
+                    _accountStore.AddToRole(user, Roles.Basic.ToString());
+                    return new Response<string>
+                    (user.Id, message: $"User Registered.");
                 }
                 else
                 {
-                    // throw new ApiException($"{result.Errors}");
-                    return null;
+                    throw new ApiException($"demo");
                 }
             }
             else
             {
                 throw new ApiException($"Email {request.Email } is already registered.");
-            }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 

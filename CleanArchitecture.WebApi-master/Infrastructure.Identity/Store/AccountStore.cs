@@ -12,6 +12,9 @@ using System.Security.Claims;
 
 using Application.DTOs;
 using Infrastructure.Identity.Contexts;
+using System.Security.Cryptography;
+using System.Text;
+using Infrastructure.Identity.Models;
 
 namespace Infrastructure.Identity.Store
 {
@@ -32,7 +35,7 @@ namespace Infrastructure.Identity.Store
         public async Task<User> FindByEmail(string eMail) {
             try
             {
-                var result = _identityDbContext.User.Where(x=>x.Email==eMail).Single();
+                var result = _identityDbContext.User.Where(x => x.Email == eMail).FirstOrDefault();
                 if (result==null)
                 {
                     return null;
@@ -187,21 +190,104 @@ public async Task<UserDTO> getUser(string userId){
                 throw ex;
             }
         }
-        //  public async Task<bool> AddToRole(UserDTO users, string roles) {
-        //     try
-        //     {
-        //     //     var user = _iMapper.Map<UserDTO,User>(users);
-        //     //     var result =  _identityDbContext.User.Where(x => x.Email==user.Email);
-        //     //     var userrole = new UserRole{
-        //     //         RoleId
-        //     //     };
-        //     //     var addRole = _identityDbContext.UserRoles.Add();
-        //     //   return true;
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         throw ex;
-        //     }
-        // }
+
+        public async Task<bool> FindByNameAsync(string userName)
+        {
+            try
+            {
+                DynamicParameters parameter = new DynamicParameters();
+                parameter.Add("@userName", userName, DbType.String, ParameterDirection.Input);
+                using (var con = new SqlConnection(connection))
+                {
+                    con.Open();
+
+                    var result = con.Execute("getUserName", parameter, commandType: CommandType.StoredProcedure);
+                    if (result == null)
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<string> CreateUser(Models.ApplicationUser request, string Password)
+        {
+            try
+            {
+                request.PasswordHash = EncodePassword(Password);
+
+                DynamicParameters parameter = new DynamicParameters();
+                parameter.Add("@userId", request.Id, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userName", request.UserName, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userNormalName", request.NormalizedUserName, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userEmail", request.Email, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userNormalEmail", request.NormalizedEmail, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userEmailconfig", request.EmailConfirmed, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userPassHash", request.PasswordHash, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userSecurity", request.SecurityStamp, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userConcuren", request.ConcurrencyStamp, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userPhone", request.PhoneNumber, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userPhoneConfirm", request.PhoneNumberConfirmed, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userTwo", request.TwoFactorEnabled, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userLockou", request.LockoutEnabled, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userAccess", request.AccessFailedCount, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userFname", request.FirstName, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userLname", request.LastName, DbType.String, ParameterDirection.Input);
+                using (var con = new SqlConnection(connection))
+                {
+                    con.Open();
+
+                    var result = con.Execute("insertUser", parameter, commandType: CommandType.StoredProcedure);
+                    if (result == null)
+                    {
+                        return "er";
+                    }
+                }
+                return "Succeeded";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static string EncodePassword(string originalPassword)
+        {
+            //Declarations
+            Byte[] originalBytes;
+            Byte[] encodedBytes;
+            MD5 md5;
+
+            //Instantiate MD5CryptoServiceProvider, get bytes for original password and compute hash (encoded password)
+            md5 = new MD5CryptoServiceProvider();
+            originalBytes = ASCIIEncoding.Default.GetBytes(originalPassword);
+            encodedBytes = md5.ComputeHash(originalBytes);
+
+            //Convert encoded bytes back to a 'readable' string
+            return BitConverter.ToString(encodedBytes);
+        }
+        internal void AddToRole(ApplicationUser user, string v)
+        {
+            try
+            {
+                DynamicParameters parameter = new DynamicParameters();
+                parameter.Add("@userId", user.Id, DbType.String, ParameterDirection.Input);
+                parameter.Add("@userIRole", v, DbType.String, ParameterDirection.Input);
+                using (var con = new SqlConnection(connection))
+                {
+                    con.Open();
+                    var result = con.Execute("getRoleUser", parameter, commandType: CommandType.StoredProcedure);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 }

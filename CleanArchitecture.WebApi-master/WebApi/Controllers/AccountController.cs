@@ -30,7 +30,6 @@ namespace WebApi.Controllers
             return Ok(await _accountService.AuthenticateAsync(request, GenerateIPAddress()));
         }
         [HttpPost("register")]
-          [Authorize(Policy = "CreateUser")]
         public async Task<IActionResult> RegisterAsync(RegisterRequest request)
         {
             var origin = Request.Headers["origin"];
